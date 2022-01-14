@@ -6,28 +6,26 @@ import Timer from './Timer'
 import {ActivityItem, clockStatus, activities, Iactivity} from '../common/models'
 import KeepMountedModal from './modal'
 import moment from "moment";
-import {connect} from 'react-redux'
-import {changeActivity} from "../redux/actions";
+import {connect, useDispatch, useSelector} from 'react-redux'
+import {changeActivity, changeClockStatus, changeTimer} from "../redux/actions";
+import internal from "stream";
 
 
 
 function StartPage(props: any) {
-    const [clockActivity, setClockActivity] = useState<number>(-1);
-    const [clockInterval, setClockInterval] = useState<any>();
     const [startTime, setStartTime] = useState<string>('');
     const [durationSecond, setDurationSecond] = useState<number>(0);
     const [durationHHMMSS, setDurationHHMMSS] = useState<string>('');
     const [openModal, setOpenModal] = useState(false);
-    const [hours, setHours] = useState<number>(0)
-    const [minuts, setMinuts] = useState<number>(0)
-    const [seconds, setSeconds] = useState<number>(0)
-    const [allActivities, setAllActivities] = useState<Iactivity>()
+    const [allActivities, setAllActivities] = useState<Iactivity>();
+    const [isStartTimer, setIsStartTimer] = useState<boolean>(false);
+    const [timerInterval, setTimerInterval] = useState<any>()
 
-    const {currentActivity, changeActivity} = props
+    const state = useSelector((state:any) => state.timer)
+    const {currentActivity,clockCurrentStatus} = state
+    const {hours, minutes, seconds} = state.time;
 
-    useEffect(() => {
-        console.log(currentActivity);
-    } ,[currentActivity])
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (activities && Object.keys(activities).length) {
@@ -36,26 +34,11 @@ function StartPage(props: any) {
     } ,[])
 
     useEffect(() => {
-        if (!openModal && clockActivity === 0) {
-            setMinuts(0);
-            setSeconds(0);
-            setHours(0);
+        if (!openModal && clockCurrentStatus === 0) {
+            dispatch(changeTimer({hours: 0, minutes: 0, seconds: 0}))
+            setIsStartTimer(false);
         }
     } , [openModal])
-
-    useEffect(() => {
-        if (seconds === 59) {
-            setSeconds(0);
-            setMinuts(prev => ++prev)
-        }
-    } , [seconds])
-
-    useEffect(() => {
-        if (minuts === 59) {
-            setMinuts(0);
-            setHours(prev => ++prev)
-        }
-    } , [minuts])
 
     const handleOpen = () => setOpenModal(true)
     const handleClose = () => {
@@ -63,37 +46,58 @@ function StartPage(props: any) {
     }
 
     useEffect(() => {
-        if (clockActivity === 1) handleStart();
-        if (clockActivity === 0) handleStop();
-        if (clockActivity === 2) clearInterval(clockInterval);
-    }, [clockActivity]);
+        if (clockCurrentStatus === 1) handleStart();
+        if (clockCurrentStatus === 0) {
+            handleStop();
+            console.log(hours, minutes, seconds);
+            dispatch(changeTimer({hours, minutes, seconds}))
+            setIsStartTimer(false);
+        }
+        if (clockCurrentStatus === 2) setIsStartTimer(false);
+    }, [clockCurrentStatus]);
 
+    useEffect(() => {
+        let timer;
+        clearInterval(timerInterval);
+        if (isStartTimer) {
+            timer = setInterval(() => {
+                if (seconds === 59) {
+                    dispatch(changeTimer({hours, minutes: minutes + 1, seconds: 0}));
+                    return
+                }
+                if (minutes === 59) {
+                    dispatch(changeTimer({hours: hours + 1, minutes: 0, seconds: seconds}))
+                    return;
+                }
+
+                dispatch(changeTimer({hours, minutes, seconds: seconds + 1}))
+            }, 1000);
+            setTimerInterval(timer);
+        }
+
+    }, [isStartTimer, seconds, minutes])
 
     const handleStart = () => {
         setStartTime(moment().format())
-        const clock = setInterval(() => {
-            setSeconds(prev => ++prev);
-        } , 1000);
-
-        setClockInterval(clock);
+        setIsStartTimer(true);
     }
 
     const handleStop = () => {
         let durationSec = Date.parse(moment().format()) - Date.parse(startTime)
         setDurationSecond(durationSec);
-        setDurationHHMMSS(`${hours}:`+`${minuts}:`+`${seconds}`);
-        clearInterval(clockInterval);
+        setDurationHHMMSS(`${hours}:`+`${minutes}:`+`${seconds}`);
         handleOpen();
         setToLocaleStorage(startTime, durationSec)
+
         setTimeout(() => {
-            setMinuts(0);
-            setSeconds(0);
-            setHours(0);
+            dispatch(changeTimer({hours: 0, minutes: 0, seconds: 0}))
         }, 6000)
     }
 
+
+
     const handleChangeActivity = (event: any, newType: any) => {
-        changeActivity(newType)
+        dispatch(changeActivity(newType));
     };
 
 
@@ -125,20 +129,20 @@ function StartPage(props: any) {
         <Timer /> {/*hours={hours} minuts={minuts} seconds={seconds}*/}
         <div>
             {
-                clockActivity != 1
+                clockCurrentStatus != 1
                     ? <Tooltip title="Start" arrow>
-                        <IconButton size="large" onClick={() => {setClockActivity(clockStatus.start)}}>
+                        <IconButton size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.start))}}>
                             <PlayArrow fontSize="inherit" />
                         </IconButton>
                     </Tooltip>
                     : <Tooltip title="Pause" arrow>
-                        <IconButton  size="large" onClick={() => {setClockActivity(clockStatus.pause)}}>
+                        <IconButton  size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.pause))}}>
                             <Pause fontSize="inherit" />
                         </IconButton>
                     </Tooltip>
             }
             <Tooltip title="Stop" arrow>
-                <IconButton  size="large" onClick={() => {setClockActivity(clockStatus.stop)}}>
+                <IconButton  size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.stop))}}>
                     <Stop fontSize="inherit" />
                 </IconButton>
             </Tooltip>
@@ -147,14 +151,4 @@ function StartPage(props: any) {
 );
 }
 
-const mapStateToProps = (state: any) => {
-    return {
-        currentActivity: state.timer.currentActivity
-    }
-}
-
-const mapDispatchToProps = {
-    changeActivity
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(StartPage);
+export default StartPage;

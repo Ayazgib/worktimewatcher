@@ -4,20 +4,18 @@ import {connect} from 'react-redux'
 
 
 const Timer = (props: any) => {
-    const {hours, minuts, seconds} = props
+    const {hours, minutes, seconds} = props.time
 
     return <div style={{display: 'flex', alignItems: 'center'}}>
         <h1>{hours < 10 ? '0' + hours : hours}</h1><span>:</span>
-        <h1>{minuts < 10 ? '0' + minuts : minuts}</h1><span>:</span>
+        <h1>{minutes < 10 ? '0' + minutes : minutes}</h1><span>:</span>
         <h1>{seconds < 10 ? '0' + seconds : seconds}</h1>
     </div>
 }
 
 const mapStateToProps = (state: any) => {
     return {
-        hours: state.timer.hours,
-        minuts: state.timer.minuts,
-        seconds: state.timer.seconds
+        time: state.timer.time
     }
 }
 

@@ -6,6 +6,11 @@ export enum clockStatus {
     start,
     pause
 }
+export interface Time {
+    hours: number,
+    minutes: number,
+    seconds: number,
+}
 
 export enum activities {
     work = 'Работа',
