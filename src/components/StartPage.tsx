@@ -2,18 +2,16 @@ import React, {useState, useEffect, Dispatch, SetStateAction, useContext} from '
 import {ToggleButton, ToggleButtonGroup, Tooltip, Button, IconButton} from '@mui/material/';
 import {BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import {PlayArrow, Pause, Stop} from '@mui/icons-material';
-import {Timer} from './Timer'
-import {ActivityItem, clockStatus} from '../common/models'
+import Timer from './Timer'
+import {ActivityItem, clockStatus, activities, Iactivity} from '../common/models'
 import KeepMountedModal from './modal'
 import moment from "moment";
+import {connect} from 'react-redux'
+import {changeActivity} from "../redux/actions";
 
-interface StartPageProps {
-    data: ActivityItem[];
-    setData: Dispatch<SetStateAction<ActivityItem[]>>;
-}
 
-function App(props: StartPageProps) {
-    const [activityType, setActivityType] = useState<string>('work');
+
+function StartPage(props: any) {
     const [clockActivity, setClockActivity] = useState<number>(-1);
     const [clockInterval, setClockInterval] = useState<any>();
     const [startTime, setStartTime] = useState<string>('');
@@ -23,6 +21,19 @@ function App(props: StartPageProps) {
     const [hours, setHours] = useState<number>(0)
     const [minuts, setMinuts] = useState<number>(0)
     const [seconds, setSeconds] = useState<number>(0)
+    const [allActivities, setAllActivities] = useState<Iactivity>()
+
+    const {currentActivity, changeActivity} = props
+
+    useEffect(() => {
+        console.log(currentActivity);
+    } ,[currentActivity])
+
+    useEffect(() => {
+        if (activities && Object.keys(activities).length) {
+            setAllActivities(activities);
+        }
+    } ,[])
 
     useEffect(() => {
         if (!openModal && clockActivity === 0) {
@@ -58,7 +69,6 @@ function App(props: StartPageProps) {
     }, [clockActivity]);
 
 
-
     const handleStart = () => {
         setStartTime(moment().format())
         const clock = setInterval(() => {
@@ -82,13 +92,13 @@ function App(props: StartPageProps) {
         }, 6000)
     }
 
-    const handleChange = (event: any, newType: any) => {
-        setActivityType(newType);
+    const handleChangeActivity = (event: any, newType: any) => {
+        changeActivity(newType)
     };
 
 
     const setToLocaleStorage = (startTime: string, duration: number) => {
-        const dataNewItem = { startTime, duration, activityType}
+        const dataNewItem = { startTime, duration, currentActivity}
         let data = props.data;
         data.push(dataNewItem);
         props.setData(data);
@@ -100,16 +110,19 @@ function App(props: StartPageProps) {
         <KeepMountedModal  durationHHMMSS={durationHHMMSS} handleClose={handleClose} openModal={openModal}/>
         <ToggleButtonGroup
             color="primary"
-            value={activityType}
+            value={currentActivity}
             exclusive
-            onChange={handleChange}
+            onChange={handleChangeActivity}
         >
-            <ToggleButton value="work">Работа</ToggleButton>
-            <ToggleButton value="study">Учеба</ToggleButton>
-            <ToggleButton value="learn">Развитие</ToggleButton>
-            <ToggleButton value="diplom">Диплом</ToggleButton>
+            {
+                allActivities
+                    ? Object.entries(activities).map(([key, value]) => {
+                        return <ToggleButton key={key} value={key}>{value}</ToggleButton>
+                    })
+                    : null
+            }
         </ToggleButtonGroup>
-        <Timer hours={hours} minuts={minuts} seconds={seconds}/>
+        <Timer /> {/*hours={hours} minuts={minuts} seconds={seconds}*/}
         <div>
             {
                 clockActivity != 1
@@ -134,4 +147,14 @@ function App(props: StartPageProps) {
 );
 }
 
-export default App;
+const mapStateToProps = (state: any) => {
+    return {
+        currentActivity: state.timer.currentActivity
+    }
+}
+
+const mapDispatchToProps = {
+    changeActivity
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StartPage);

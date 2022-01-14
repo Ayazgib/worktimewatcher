@@ -7,6 +7,15 @@ export enum clockStatus {
     pause
 }
 
+export enum activities {
+    work = 'Работа',
+    study = 'Учеба',
+    learn = 'Развитие',
+    diplomа = 'Диплом',
+}
+export interface Iactivity {
+    [key: string]: string
+}
 export enum PagesLink {
     main= '/',
     charts = '/Charts',
@@ -28,5 +37,5 @@ export interface Month {
 export interface ActivityItem {
     startTime: string,
     duration: number,
-    activityType: string,
+    currentActivity: string,
 }

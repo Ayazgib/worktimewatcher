@@ -100,17 +100,17 @@ export const Charts = (props: ChartsProps) => {
                         //@ts-ignore
                         let obj = new MonthForChart();
                         obj.name = monthsArr[monthIndex];
-                        obj[data.activityType] = Math.ceil(data.duration / correctedTime)
+                        obj[data.currentActivity] = Math.ceil(data.duration / correctedTime)
                         chartData.push(obj)
                     } else {
-                        chartData[monthIndex][data.activityType] = chartData[monthIndex][data.activityType]
-                            ? chartData[monthIndex][data.activityType] + Math.ceil(data.duration / correctedTime)
+                        chartData[monthIndex][data.currentActivity] = chartData[monthIndex][data.currentActivity]
+                            ? chartData[monthIndex][data.currentActivity] + Math.ceil(data.duration / correctedTime)
                             : Math.ceil(data.duration / correctedTime)
                     }
 
                     availableMonths.add(month);
                 }
-                availableActivities.add(data.activityType);
+                availableActivities.add(data.currentActivity);
             })
             let availableMonthsObjects = Array.from(availableMonths.values()).map((month: any, i) => {
                     return {name: monthsArr[i], value: i}
