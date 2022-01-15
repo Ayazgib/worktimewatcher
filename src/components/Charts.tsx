@@ -4,6 +4,7 @@ import {makeStyles, createStyles} from "@mui/styles";
 import {ActivityItem, Month, monthsArr} from "../common/models";
 import {XAxis,YAxis, BarChart, CartesianGrid, Tooltip, Legend, Bar} from "recharts";
 import moment from "moment";
+import {useDispatch, useSelector} from "react-redux";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,10 +18,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
     }),
 );
-
-interface ChartsProps {
-    data: ActivityItem[],
-}
 
 const data = [
     {
@@ -60,7 +57,7 @@ const data = [
     }
 ]
 
-export const Charts = (props: ChartsProps) => {
+export const Charts = (props: any) => {
     const classes = useStyles();
     const [allData, setAllData] = useState<any>([])
     const [months, setMonths] = useState<any>([])
@@ -73,6 +70,13 @@ export const Charts = (props: ChartsProps) => {
     const [allActivities, setAllActivities] = useState<any>([]);
     const [sortedActivities, setSortedActivities] = useState<any>([])
 
+    const state = useSelector((state:any) => state)
+    const {dataFromLs} = state.global
+
+
+    const dispatch = useDispatch()
+
+
     function MonthForChart () {}
 
     function byField(fieldName: string){
@@ -83,12 +87,11 @@ export const Charts = (props: ChartsProps) => {
          фильтр активности (активность через компонент изи)
     * */
     useEffect(() => {
-        if (props.data) {
-            console.log(props.data)
-            setAllData(props.data);
+        if (dataFromLs) {
+            setAllData(dataFromLs);
             let availableMonths = new Set(), availableActivities = new Set(), chartData: any = [];
 
-            props.data.sort(byField('startTime')).forEach((data:ActivityItem) => {
+            dataFromLs.sort(byField('startTime')).forEach((data:ActivityItem) => {
                 let date = data.startTime.slice(0, 10),
                     [year, month, day] = date.split('-');
 
@@ -123,7 +126,7 @@ export const Charts = (props: ChartsProps) => {
             setSortedData(chartData);
             setAvailableMonths(availableMonthsObjects);
         }
-    } ,[props.data])
+    } ,[dataFromLs])
 
     const handleChange = (event: any) => {
         const {

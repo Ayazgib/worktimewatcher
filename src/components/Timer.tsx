@@ -1,10 +1,8 @@
 import React, {useState, useEffect, useRef, useContext} from 'react';
-import {connect} from 'react-redux'
+import {connect, useSelector} from 'react-redux'
 
-
-
-const Timer = (props: any) => {
-    const {hours, minutes, seconds} = props.time
+export const Timer = (props: any) => {
+    const {hours, minutes, seconds} = useSelector((state:any) => state.timer.time)
 
     return <div style={{display: 'flex', alignItems: 'center'}}>
         <h1>{hours < 10 ? '0' + hours : hours}</h1><span>:</span>
@@ -13,11 +11,6 @@ const Timer = (props: any) => {
     </div>
 }
 
-const mapStateToProps = (state: any) => {
-    return {
-        time: state.timer.time
-    }
-}
 
-export default connect(mapStateToProps,)(Timer)
+
 

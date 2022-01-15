@@ -1,4 +1,5 @@
 import exp from "constants";
+export const savedConstName = 'app_data';
 
 export enum clockStatus {
     notStarted= -1,

@@ -2,19 +2,19 @@ import React, {useContext, useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
+import {toggleModal} from "../redux/actions";
+import {useDispatch, useSelector} from "react-redux";
 
-interface IModal {
-    handleClose: () => void;
-    openModal: boolean;
-    durationHHMMSS: string;
-}
-
-export default function KeepMountedModal(props: IModal) {
+export default function KeepMountedModal(props: any) {
     const [duration, setDuration] = useState<string[]>([])
-    const [timerWordCase, setTimerWordCase] = useState<string[]>(['часов', 'минут', 'секунд'])
+    const [timerWordCase, setTimerWordCase] = useState<string[]>(['часов', 'минут', 'секунд']);
+    const [warningInformation, setWarningInformation] = useState<string>('Вы переходите на другую вкладку приложения');
+    const dispatch = useDispatch()
+
+    const {durationHHMMSS, isOpenModal, isWarning} = useSelector((state:any) => state.timer)
 
     useEffect(() => {
-        const duration = props.durationHHMMSS.split(':');
+        const duration = durationHHMMSS.split(':');
         const wordCases = timerWordCase;
 
         if (Number(duration[0]) === 1) {
@@ -36,20 +36,23 @@ export default function KeepMountedModal(props: IModal) {
         }
 
         setDuration(duration);
-    } ,[props.durationHHMMSS])
+    } ,[durationHHMMSS])
+
+    const handleClose = () => dispatch(toggleModal(false))
 
     return (
         <div>
             <Modal
                 keepMounted
-                open={props.openModal}
-                onClose={props.handleClose}
+                open={isOpenModal}
+                onClose={handleClose}
                 aria-labelledby="keep-mounted-modal-title"
                 aria-describedby="keep-mounted-modal-description"
             >
                 <Box className='modal'>
                     <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
                         Таймер отключен.
+                        {isWarning ? warningInformation : null}
                     </Typography>
                     <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }} style={{display: 'flex'}}>
                         Вы потратили:
