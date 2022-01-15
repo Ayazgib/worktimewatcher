@@ -59,7 +59,6 @@ export function setStartTime(startTime: string) {
 }
 
 export function setDataFromLS(data: any) {
-    console.log(data);
     return {
         type: SET_DATA_FROM_LS,
         payload: data

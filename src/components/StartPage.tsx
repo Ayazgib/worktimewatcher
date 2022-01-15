@@ -34,10 +34,7 @@ function StartPage(props: any) {
 
     //получение видов деятельности
     useEffect(() => {
-        const dataFromLS = localStorage.getItem(savedConstName);
-        let data = [];
-        if (dataFromLS) data = JSON.parse(dataFromLS);
-        dispatch(setDataFromLS(data));
+
 
         if (activities && Object.keys(activities).length) {
             setAllActivities(activities);

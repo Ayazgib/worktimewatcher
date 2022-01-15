@@ -120,6 +120,8 @@ export const Charts = (props: any) => {
                 }
             )
             let activitiesArr = Array.from(availableActivities.values())
+            setSortedMonths(availableMonthsObjects?.map((month: any) => month.name))
+            console.log(activitiesArr);
             setAllActivities(activitiesArr);
             setSortedActivities(activitiesArr)
             setChartData(chartData);
@@ -132,9 +134,10 @@ export const Charts = (props: any) => {
         const {
             target: { value },
         } = event;
-
         setSortedMonths(typeof value === 'string' ? value.split(',') : value);
     }
+
+
 
     const sortByMonthName = (a: any, b: any) => {
         let month1 = monthsArr.findIndex(month => month.toLowerCase() === a.toLowerCase()),
