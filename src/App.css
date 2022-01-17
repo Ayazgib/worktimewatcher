@@ -28,3 +28,20 @@
   flex-direction: column;
   align-items: center;
 }
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #EDF4FB;
+  margin-bottom: 10px;
+}
+.headerLink {
+  padding: 5px;
+  fontSize: 23;
+  text-decoration: none;
+  color: #757575;
+  text-transform: uppercase;
+}
+.headerLink.active {
+  color: #1976D2;
+}

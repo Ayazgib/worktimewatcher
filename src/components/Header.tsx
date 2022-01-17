@@ -1,31 +1,14 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import {clockStatus, PagesLink} from "../common/models";
-import { Theme, Typography, ToggleButton} from "@mui/material/";
+import { Theme, Typography} from "@mui/material/";
+
 import {makeStyles, createStyles} from "@mui/styles";
 import {useDispatch, useSelector} from "react-redux";
 import {changeClockStatus, setIsWarning} from "../redux/actions";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        header: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 10
-        },
-        headerLink: {
-            padding: 5,
-            fontSize: 23,
-            textDecoration: 'none',
-            color: 'white',
-            textTransform: 'uppercase',
-        }
-    }),
-);
 
 export const Header = () => {
-    const classes = useStyles()
 
     const state = useSelector((state:any) => state.timer)
     const { isStartTimer, isWarning} = state
@@ -40,17 +23,17 @@ export const Header = () => {
     }
 
     return (
-        <header className={classes.header}>
+        <header className='header'>
             <nav style={{display: 'flex'}}>
-                <NavLink className={classes.headerLink} to={PagesLink.main} >
-                    <ToggleButton value='Главная'>
+                <NavLink className='headerLink' to={PagesLink.main} >
+                    <Typography variant="h6" component="div">
                         Главная
-                    </ToggleButton>
+                    </Typography>
                 </NavLink>
-                <NavLink className={classes.headerLink} to={PagesLink.charts} onClick={handleOpenWarning}>
-                    <ToggleButton value='Анализ'>
-                       Анализ
-                    </ToggleButton>
+                <NavLink className='headerLink' to={PagesLink.charts} onClick={handleOpenWarning}>
+                    <Typography variant="h6" component="div">
+                        Анализ
+                    </Typography>
                 </NavLink>
                 <button onClick={() => {
                     localStorage.clear();
