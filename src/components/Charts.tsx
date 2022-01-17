@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Autocomplete, FormControl, InputLabel, TextField, Theme, Select, MenuItem} from "@mui/material";
+import { FormControl, InputLabel,  Theme, Select, MenuItem} from "@mui/material";
 import {makeStyles, createStyles} from "@mui/styles";
-import {ActivityItem, Month, monthsArr} from "../common/models";
+import {ActivityItem, Month, monthsArr, activities} from "../common/models";
 import {XAxis,YAxis, BarChart, CartesianGrid, Tooltip, Legend, Bar} from "recharts";
-import moment from "moment";
-import {useDispatch, useSelector} from "react-redux";
+import { useSelector} from "react-redux";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -15,47 +14,23 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: 'grey',
             marginBottom: 10
         },
-
+        chartWrapper: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+        },
+        chartFilters: {
+            display: 'flex',
+            marginLeft: 60,
+        },
+        chartMainBlock: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+        },
     }),
 );
 
-const data = [
-    {
-        "name": "Page A",
-        "uv": 4000,
-        "pv": 2400
-    },
-    {
-        "name": "Page B",
-        "uv": 3000,
-        "pv": 1398
-    },
-    {
-        "name": "Page C",
-        "uv": 2000,
-        "pv": 9800
-    },
-    {
-        "name": "Page D",
-        "uv": 2780,
-        "pv": 3908
-    },
-    {
-        "name": "Page E",
-        "uv": 1890,
-        "pv": 4800
-    },
-    {
-        "name": "Page F",
-        "uv": 2390,
-        "pv": 3800
-    },
-    {
-        "name": "Page G",
-        "uv": 3490,
-        "pv": 4300
-    }
-]
 
 export const Charts = (props: any) => {
     const classes = useStyles();
@@ -74,23 +49,17 @@ export const Charts = (props: any) => {
     const {dataFromLs} = state.global
 
 
-    const dispatch = useDispatch()
-
-
     function MonthForChart () {}
 
     function byField(fieldName: string){
         return (a: any, b: any) => a[fieldName] > b[fieldName] ? 1 : -1;
     };
-    /* TODO перевести время в минуты,
-        добавить фильтр месяца
-         фильтр активности (активность через компонент изи)
-    * */
+    //TODO нет данных для отображения
     useEffect(() => {
         if (dataFromLs) {
             setAllData(dataFromLs);
             let availableMonths = new Set(), availableActivities = new Set(), chartData: any = [];
-
+            console.log(dataFromLs);
             dataFromLs.sort(byField('startTime')).forEach((data:ActivityItem) => {
                 let date = data.startTime.slice(0, 10),
                     [year, month, day] = date.split('-');
@@ -103,25 +72,25 @@ export const Charts = (props: any) => {
                         //@ts-ignore
                         let obj = new MonthForChart();
                         obj.name = monthsArr[monthIndex];
-                        obj[data.currentActivity] = Math.ceil(data.duration / correctedTime)
+                        obj[data.currentActivity] = Math.trunc(data.duration / correctedTime)
                         chartData.push(obj)
                     } else {
                         chartData[monthIndex][data.currentActivity] = chartData[monthIndex][data.currentActivity]
-                            ? chartData[monthIndex][data.currentActivity] + Math.ceil(data.duration / correctedTime)
-                            : Math.ceil(data.duration / correctedTime)
+                            ? chartData[monthIndex][data.currentActivity] + Math.trunc(data.duration / correctedTime)
+                            : Math.trunc(data.duration / correctedTime)
                     }
 
                     availableMonths.add(month);
                 }
-                availableActivities.add(data.currentActivity);
+                if (data.currentActivity) availableActivities.add(data.currentActivity);
             })
             let availableMonthsObjects = Array.from(availableMonths.values()).map((month: any, i) => {
                     return {name: monthsArr[i], value: i}
                 }
             )
             let activitiesArr = Array.from(availableActivities.values())
+
             setSortedMonths(availableMonthsObjects?.map((month: any) => month.name))
-            console.log(activitiesArr);
             setAllActivities(activitiesArr);
             setSortedActivities(activitiesArr)
             setChartData(chartData);
@@ -130,13 +99,17 @@ export const Charts = (props: any) => {
         }
     } ,[dataFromLs])
 
-    const handleChange = (event: any) => {
+    const handleChange = (event: any, filterName: string) => {
         const {
             target: { value },
         } = event;
-        setSortedMonths(typeof value === 'string' ? value.split(',') : value);
-    }
+        if (filterName === 'month') {
+            setSortedMonths(typeof value === 'string' ? value.split(',') : value);
+        } else if (filterName === 'activities') {
+            setSortedActivities(typeof value === 'string' ? value.split(',') : value);
+        }
 
+    }
 
 
     const sortByMonthName = (a: any, b: any) => {
@@ -156,66 +129,81 @@ export const Charts = (props: any) => {
     }, [sortedMonths])
 
     return (
-        <div>
-            {
-                availableMonths && availableMonths.length ?
-                    <FormControl sx={{m: 1, width: 300}}>
-                        <InputLabel id="demo-multiple-name-label">Фильтр месяца</InputLabel>
-                        <Select
-                            labelId="demo-multiple-name-label"
-                            label='Фильтр по месяцу'
-                            id="demo-multiple-name"
-                            multiple
-                            value={sortedMonths}
-                            onChange={handleChange}
-                        >
-                            {availableMonths.map((month: any) => (
-                                <MenuItem
-                                    key={month.value}
-                                    value={month.name}
-                                >
-                                    {month.name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    : null
-            }
-            {
-                allActivities && allActivities.length
-                    ? <FormControl sx={{m: 1, width: 300}}>
-                        <InputLabel id="demo-multiple-name-label">Фильтр активности</InputLabel>
-                        <Select
-                            labelId="demo-multiple-name-label"
-                            label='Фильтр по месяцу'
-                            id="demo-multiple-name"
-                            multiple
-                            value={sortedActivities}
-                            onChange={handleChange}
-                        >
-                            {allActivities.map((activity: any, index: number) => (
-                                <MenuItem
-                                    key={index}
-                                    value={activity}
-                                >
-                                    {activity}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    : null
-            }
-
-
-            <BarChart width={730} height={250} data={sortedData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="work" fill="#8884d8" />
-                <Bar dataKey="study" fill="#82ca9d" />
-            </BarChart>
+        <div className={classes.chartWrapper + ' mainBlock'}>
+                {
+                    allData.length
+                        ? <div className={classes.chartMainBlock}>
+                            <div className={classes.chartFilters}>
+                                {
+                                    availableMonths && availableMonths.length ?
+                                        <FormControl sx={{m: 1, width: 300}}>
+                                            <InputLabel id="demo-multiple-name-label">Фильтр месяца</InputLabel>
+                                            <Select
+                                                labelId="demo-multiple-name-label"
+                                                label='Фильтр по месяцу'
+                                                id="demo-multiple-name"
+                                                multiple
+                                                value={sortedMonths}
+                                                onChange={(e) => handleChange(e, 'month')}
+                                            >
+                                                {availableMonths.map((month: any) => (
+                                                    <MenuItem
+                                                        key={month.value}
+                                                        value={month.name}
+                                                    >
+                                                        {month.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        : null
+                                }
+                                {
+                                    allActivities && allActivities.length
+                                        ? <FormControl sx={{m: 1, width: 300}}>
+                                            <InputLabel id="demo-multiple-name-label">Фильтр активности</InputLabel>
+                                            <Select
+                                                labelId="demo-multiple-name-label"
+                                                label='Фильтр по месяцу'
+                                                id="demo-multiple-name"
+                                                multiple
+                                                value={sortedActivities}
+                                                onChange={(e) => handleChange(e, 'activities')}
+                                            >
+                                                {allActivities.map((activity: any, index: number) => (
+                                                    <MenuItem
+                                                        key={index}
+                                                        value={activity}
+                                                    >
+                                                        {activity}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                        : null
+                                }
+                            </div>
+                            <BarChart width={730} height={250} data={sortedData}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis name='asd'/>
+                                <Tooltip />
+                                <Legend />
+                                {
+                                    sortedActivities.length
+                                        ? sortedActivities.map((activity: string) => {
+                                            // @ts-ignore
+                                            let currentActivity: any = activities[activity];
+                                            if (currentActivity) {
+                                                return <Bar key={currentActivity.name} dataKey={activity} fill={currentActivity.color} />
+                                            }
+                                        })
+                                        : null
+                                }
+                            </BarChart>
+                        </div>
+                        : <h1>Нет данных для отображения</h1>
+                }
         </div>
     )
 }

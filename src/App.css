@@ -1,3 +1,8 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .modal {
   position: absolute;
   top: 50%;
@@ -9,4 +14,17 @@
   background: white;
   boxShadow: 24px;
   p: 4;
+}
+.recharts-default-legend {
+  margin: -12px !important;
+  color: #ce0b77;
+}
+.mainBlock {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

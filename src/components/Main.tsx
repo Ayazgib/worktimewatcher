@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Dispatch, SetStateAction, useContext} from 'react';
 import {ToggleButton, ToggleButtonGroup, Tooltip, Button, IconButton} from '@mui/material/';
 import {BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import {ActivityItem, clockStatus, activities, Iactivity, savedConstName, PagesLink} from '../common/models'
+import {ActivityItem, clockStatus, activities, savedConstName, PagesLink} from '../common/models'
 import KeepMountedModal from './modal'
 
 import StartPage from "./StartPage";
@@ -9,7 +9,6 @@ import {Charts} from "./Charts";
 import AlertDialog from "./Alert";
 import {setDataFromLS} from "../redux/actions";
 import {useDispatch} from "react-redux";
-
 
 
 function Main(props: any) {

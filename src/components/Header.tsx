@@ -1,8 +1,7 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import {clockStatus, PagesLink} from "../common/models";
-import { Theme, Typography} from "@mui/material/";
-
+import { Theme, Typography, ToggleButton} from "@mui/material/";
 import {makeStyles, createStyles} from "@mui/styles";
 import {useDispatch, useSelector} from "react-redux";
 import {changeClockStatus, setIsWarning} from "../redux/actions";
@@ -13,7 +12,6 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'grey',
             marginBottom: 10
         },
         headerLink: {
@@ -45,15 +43,18 @@ export const Header = () => {
         <header className={classes.header}>
             <nav style={{display: 'flex'}}>
                 <NavLink className={classes.headerLink} to={PagesLink.main} >
-                    <Typography variant="h6" component="div">
+                    <ToggleButton value='Главная'>
                         Главная
-                    </Typography>
+                    </ToggleButton>
                 </NavLink>
                 <NavLink className={classes.headerLink} to={PagesLink.charts} onClick={handleOpenWarning}>
-                    <Typography variant="h6" component="div">
-                        Анализ
-                    </Typography>
+                    <ToggleButton value='Анализ'>
+                       Анализ
+                    </ToggleButton>
                 </NavLink>
+                <button onClick={() => {
+                    localStorage.clear();
+                }}>CLEAR</button>
             </nav>
         </header>
     )

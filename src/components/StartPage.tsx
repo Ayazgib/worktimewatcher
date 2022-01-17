@@ -2,8 +2,10 @@ import React, {useState, useEffect, Dispatch, SetStateAction, useContext} from '
 import {ToggleButton, ToggleButtonGroup, Tooltip, Button, IconButton} from '@mui/material/';
 import {BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import {PlayArrow, Pause, Stop} from '@mui/icons-material';
+import {makeStyles, createStyles} from "@mui/styles";
+
 import {Timer} from './Timer'
-import {ActivityItem, clockStatus, activities, Iactivity, savedConstName} from '../common/models'
+import {ActivityItem, clockStatus, activities,  savedConstName} from '../common/models'
 import KeepMountedModal from './modal'
 import moment from "moment";
 import {connect, useDispatch, useSelector} from 'react-redux'
@@ -17,13 +19,15 @@ import {
     toggleModal
 } from "../redux/actions";
 import internal from "stream";
+import {Theme} from "@mui/material";
 
 
 
 function StartPage(props: any) {
     const [durationSecond, setDurationSecond] = useState<number>(0);
-    const [allActivities, setAllActivities] = useState<Iactivity>();
+    const [allActivities, setAllActivities] = useState<any>();
     const [timerInterval, setTimerInterval] = useState<any>()
+
 
     const state = useSelector((state:any) => state)
     const {currentActivity,clockCurrentStatus, isOpenModal, isStartTimer, startTime, shouldOpenModal} = state.timer
@@ -36,7 +40,7 @@ function StartPage(props: any) {
     useEffect(() => {
 
 
-        if (activities && Object.keys(activities).length) {
+        if (activities) {
             setAllActivities(activities);
         }
     } ,[])
@@ -101,13 +105,13 @@ function StartPage(props: any) {
     }
     //изменение вида деятельности
     const handleChangeActivity = (event: any, newType: any) => {
+        console.log(newType);
         dispatch(changeActivity(newType));
     };
 
 
-
     return (
-    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+    <div className='mainBlock'>
         <ToggleButtonGroup
             color="primary"
             value={currentActivity}
@@ -117,7 +121,7 @@ function StartPage(props: any) {
             {
                 allActivities
                     ? Object.entries(activities).map(([key, value]) => {
-                        return <ToggleButton key={key} value={key}>{value}</ToggleButton>
+                        return <ToggleButton key={key} value={key}>{value.name}</ToggleButton>
                     })
                     : null
             }

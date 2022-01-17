@@ -13,15 +13,25 @@ export interface Time {
     seconds: number,
 }
 
-export enum activities {
-    work = 'Работа',
-    study = 'Учеба',
-    learn = 'Развитие',
-    diplomа = 'Диплом',
+export const activities = {
+    work: {
+        name: 'Работа',
+        color: '#061157FF'
+    },
+    study: {
+        name: 'Учеба',
+        color: '#e03535',
+    },
+    learn: {
+        name: 'Развитие',
+        color: '#01AD54FF',
+    },
+    diplomа: {
+        name: 'Диплом',
+        color: '#CE0B77FF',
+    }
 }
-export interface Iactivity {
-    [key: string]: string
-}
+
 export enum PagesLink {
     main= '/',
     charts = '/Charts',
