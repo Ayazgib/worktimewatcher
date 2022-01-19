@@ -1,9 +1,18 @@
 import {
     CHANGE_ACTIVITY,
     CHANGE_CLOCK_STATUS,
-    INCREMENT_TIMER_ITEM, POMODORRO_PLAYING_COUNT, POMODORRO_TIME, SET_DATA_FROM_LS,
+    INCREMENT_TIMER_ITEM,
+    POMODORRO_PLAYING_COUNT,
+    POMODORRO_TIME,
+    SET_DATA_FROM_LS,
     SET_DURATION_HHMMSS,
-    SET_IS_WARNING, SET_SHOULD_OPEN_MODAL, SET_START_TIME, TOGGLE_FROM_POMODORRO, TOGGLE_MODAL, TOGGLE_POMODORRO,
+    SET_IS_WARNING,
+    SET_SHOULD_OPEN_MODAL,
+    SET_START_TIME,
+    TOGGLE_FROM_POMODORRO,
+    TOGGLE_MODAL,
+    TOGGLE_MUSIC,
+    TOGGLE_POMODORRO,
 } from "./types";
 import {Time} from "../common/models";
 
@@ -71,7 +80,8 @@ export function setShouldOpenModal(should: boolean) {
         payload: should
     }
 }
-
+/** POMODORRO ACTIONS
+ * */
 export function togglePomodorro(status: boolean) {
     return {
         type: TOGGLE_POMODORRO,
@@ -97,6 +107,14 @@ export function incrementPomodorroCount(count: number) {
     return {
         type: POMODORRO_PLAYING_COUNT,
         payload: count
+    }
+}
+/** MUSIC ACTIONS
+ * */
+export function toggleMusic(activate: boolean) {
+    return {
+        type: TOGGLE_MUSIC,
+        payload: activate
     }
 }
 

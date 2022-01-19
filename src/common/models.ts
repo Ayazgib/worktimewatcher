@@ -62,26 +62,71 @@ const audio2 = require("../audio/90.mp3");
 const audio3 = require("../audio/кавказская.mp3")
 const audio4 = require("../audio/награждение.mp3")
 const audio5 = require("../audio/Цыган.mp3")
-export const audios = [
+
+export interface IAudio {
+    id: string,
+    name: string,
+    url: any,
+}
+
+export const audios: IAudio[] = [
     {
+        id: 'audio-1',
         name: 'Лада седан',
         url: audio1
     },
     {
+        id: 'audio-2',
         name: 'Хит 90-х',
         url: audio2
     },
     {
+        id: 'audio-3',
         name: 'Кавказская',
         url: audio3
     },
     {
+        id: 'audio-4',
         name: 'Награждение в клубе',
         url: audio4
     },
     {
-
+        id: 'audio-5',
         name: 'Ай дигид диди дай',
         url: audio5
     },
+]
+
+export interface IactionsWithMusic {
+    actionName: string,
+    musicName: string,
+    musicUrl: any
+}
+
+export const actionsWithMusic: IactionsWithMusic[] = [
+    {
+        actionName: 'play',
+        musicName: '',
+        musicUrl: '',
+    },
+    {
+        actionName: 'pause',
+        musicName: '',
+        musicUrl: '',
+    },
+    {
+        actionName: 'stop',
+        musicName: '',
+        musicUrl: '',
+    },
+    {
+        actionName: 'pomodorro chill',
+        musicName: '',
+        musicUrl: '',
+    },
+    {
+        actionName: 'pomodorro work',
+        musicName: '',
+        musicUrl: '',
+    }
 ]

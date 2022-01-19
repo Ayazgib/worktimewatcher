@@ -15,3 +15,4 @@ export const SET_DATA_FROM_LS = 'SET_DATA_FROM_LS'
 /* for settings*/
 export const TOGGLE_POMODORRO = 'TOGGLE_POMODORRO'
 export const POMODORRO_TIME = 'POMODORRO_TIME'
+export const TOGGLE_MUSIC = 'TOGGLE_MUSIC'

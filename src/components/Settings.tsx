@@ -6,7 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import ReactAudioPlayer from 'react-audio-player';
 import {connect, useDispatch, useSelector} from 'react-redux'
-import {audios, savedConstName} from "../common/models";
+import {actionsWithMusic, audios, IactionsWithMusic, savedConstName} from "../common/models";
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -17,28 +17,22 @@ import {
     changeTimer, setDataFromLS,
     setDurationHHMMSS, setPomodorroTime, setShouldOpenModal,
     setStartTime,
-    toggleModal, togglePomodorro
+    toggleModal, toggleMusic, togglePomodorro
 } from "../redux/actions";
 import {MenuItem, Select, TextField} from "@mui/material";
 import {Button} from "@mui/material/";
 import Typography from "@mui/material/Typography";
+import {MusicDND} from "./MusicDND";
 
 
 function Settings(props: any) {
+    const [expanded, setExpanded] = useState<boolean>(false);
     const [savedToLSName, setSavedToLSName] = useState<string>(savedConstName + '/settings')
+
     const state = useSelector((state:any) => state)
-    const {pomodorroIsActive, pomodorroTime} = state.settings
+    const {pomodorroIsActive, pomodorroTime, musicIsActive} = state.settings
 
     const dispatch = useDispatch()
-
-
-    // const handlePlay = (index: number) => {
-    //     let a = new Audio(audios[index].url);
-    //     a.play();
-    // }
-    //
-    // const [expanded, setExpanded] = React.useState(false);
-
 
     const handleChangeTime = (e: any, timeType: string) => {
         if (timeType === 'work') {
@@ -58,11 +52,13 @@ function Settings(props: any) {
         if (showModal) alert('Данные успешно сохранены')
     }
 
+
+
     return (
         <div className='settingsWrapper'>
             <FormControl component="fieldset">
                 <FormLabel component="legend">Техника "Помодорро</FormLabel>
-                <FormGroup aria-label="position" row className='settings-pomodorro-group'>
+                <FormGroup aria-label="position" row className='settings-item-group'>
                     <FormControlLabel
                         control={<Checkbox checked={pomodorroIsActive}/>}
                         label='Активировать'
@@ -79,48 +75,38 @@ function Settings(props: any) {
                     }
                 </FormGroup>
             </FormControl>
+            <FormControl component="fieldset" >
+                <FormLabel component="legend">Музыкальный отклик</FormLabel>
+                <FormGroup aria-label="position" className='settings-item-group'>
+                    <FormControlLabel
+                        control={<Checkbox checked={musicIsActive}/>}
+                        label='Активировать'
+                        labelPlacement='start'
+                        onChange={() => dispatch(toggleMusic(!musicIsActive))}
+                        className='settings-form-label'
+                    />
+                    {
+                        musicIsActive
+                            ? <div style={{display: 'flex', justifyContent: "space-between"}}>
+                                {
+                                    actionsWithMusic.length
+                                        ? <div className='settings-action-wrapper'>
+                                            {
+                                                actionsWithMusic.map((actions: IactionsWithMusic, index) =>
+                                                    <h4 key={index} className='settings-action-name'>{actions.actionName}</h4>
+                                                )
+                                            }
+                                         </div>
+                                        : null
+                                }
+                                <MusicDND />
+                            </div>
+                            : null
+                    }
+                </FormGroup>
+            </FormControl>
             <Button style={{alignSelf: 'flex-end'}} variant="outlined" onClick={() => handleSave()}>СОХРАНИТЬ</Button>
 
-            {/*<FormControl component="fieldset">*/}
-            {/*    <FormLabel component="legend">Техника "Помодорро</FormLabel>*/}
-            {/*    <FormGroup aria-label="position" row className='settings-pomodorro-group'>*/}
-            {/*        <FormControlLabel*/}
-            {/*            value={pomodorroIsActive}*/}
-            {/*            control={<Checkbox />}*/}
-            {/*            label='Активировать'*/}
-            {/*            labelPlacement='start'*/}
-            {/*            onChange={handleToggleMusic}*/}
-            {/*        />*/}
-            {/*        {*/}
-            {/*            pomodorroIsActive*/}
-            {/*                ? <div style={{marginLeft: 30}}>*/}
-            {/*                    <TextField id="outlined-basic" value={pomodorraTime.work} label="Время работы" variant="outlined" />*/}
-            {/*                    <TextField id="outlined-basic" style={{marginLeft: 20}}value={pomodorraTime.chill} label="Время отдыха" variant="outlined" />*/}
-            {/*                </div>*/}
-            {/*                : null*/}
-            {/*        }*/}
-            {/*    </FormGroup>*/}
-            {/*</FormControl>*/}
-            {/*<Accordion expanded={expanded} onChange={() => {*/}
-            {/*    setExpanded(!expanded);*/}
-            {/*}}>*/}
-            {/*    <AccordionSummary*/}
-            {/*        expandIcon={<ExpandMoreIcon />}*/}
-            {/*        aria-controls="panel1bh-content"*/}
-            {/*        id="panel1bh-header"*/}
-            {/*    >*/}
-            {/*        <Typography sx={{ width: '33%', flexShrink: 0 }}>*/}
-            {/*            General settings*/}
-            {/*        </Typography>*/}
-            {/*        <Typography sx={{ color: 'text.secondary' }}>I am an accordion</Typography>*/}
-            {/*    </AccordionSummary>*/}
-            {/*    <AccordionDetails>*/}
-            {/*        <Typography>*/}
-            {/*            Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat.*/}
-            {/*            Aliquam eget maximus est, id dignissim quam.*/}
-            {/*        </Typography>*/}
-            {/*    </AccordionDetails>*/}
-            {/*</Accordion>*/}
         </div>
     );
 }

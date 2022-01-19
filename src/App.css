@@ -44,6 +44,7 @@
 }
 .headerLink.active {
   color: #1976D2;
+
 }
 .settingsWrapper {
   display: flex;
@@ -51,8 +52,26 @@
   width: 500px;
   margin: 0 auto;
 }
-.settings-pomodorro-group {
+.settings-item-group {
   display: flex;
-  flex-direction: column;
+  flex-direction: column ;
   margin-bottom: 20px;
+}
+.settings-form-label {
+  align-self: flex-start;
+}
+.settings-action-wrapper {
+  padding: 10px 8px 0 8px;
+  display: grid;
+  row-gap: 5px;
+  border: 1px solid black;
+  border-radius: 20px;
+}
+.settings-action-name {
+  background-color: darkgrey;
+  width: 170px;
+  border-radius: 20px;
+  user-select: none;
+  padding: 16px;
+  margin: 0px 0px 8px;
 }
