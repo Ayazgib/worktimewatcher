@@ -155,10 +155,7 @@ function StartPage(props: any) {
 
     }, [isStartTimer, seconds, minutes])
 
-
-
-    //TODO LAST ACTIVE ACTIVITY
-    // менять фон
+    //TODO LAST ACTIVE ACTIVITY //ЦВЕТ МОДАЛКИ У ТЕМНОЙ ТЕМЫ
     const handleStop = () => {
         if (musicIsActive) togglePlayingMusic(actions.stop, musicActions);
         clearTimeout(pomodorroTimer);

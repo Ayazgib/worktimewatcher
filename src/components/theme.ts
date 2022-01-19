@@ -31,7 +31,7 @@ export const GlobalStyles = createGlobalStyle`
     color: ${(props: any) => props.theme.headingColor};
   }
   
-  p,a,span,h1,h2,h3,h4,h5,h6, button, .MuiToggleButton-root, .Mui-selected, legend, label, b, #demo-multiple-name {
+  p,a,span,h1,h2,h3,h4,h5,h6,.MuiTypography-root button, .MuiToggleButton-root, .Mui-selected, legend, label, b, #demo-multiple-name {
     color: ${(props: any) => props.theme.headingColor} !important;
   }
   .Mui-selected {

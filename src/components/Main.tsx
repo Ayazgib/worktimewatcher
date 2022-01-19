@@ -15,7 +15,14 @@ import KeepMountedModal from './modal'
 import StartPage from "./StartPage";
 import {Charts} from "./Charts";
 import AlertDialog from "./Alert";
-import {reorderMusic, setDataFromLS, setPomodorroTime, toggleMusic, togglePomodorro} from "../redux/actions";
+import {
+    reorderMusic,
+    setDataFromLS,
+    setPomodorroTime,
+    toggleMusic,
+    togglePomodorro,
+    toggleTheme
+} from "../redux/actions";
 import {useDispatch, useSelector} from "react-redux";
 import Settings from "./Settings";
 import {darkTheme, lightTheme, GlobalStyles} from "./theme";
@@ -51,20 +58,21 @@ function Main(props: any) {
                 dispatch(toggleMusic(savedItem.music.musicIsActive))
                 dispatch(reorderMusic(savedItem.music.actionsMusic))
             }
+            if (savedItem.theme) {
+                dispatch(toggleTheme(savedItem.theme))
+            }
         } else  {
             //default variable
             dispatch(togglePomodorro(false))
             dispatch(setPomodorroTime(20,5))
             dispatch(toggleMusic(false))
             dispatch(reorderMusic(actionsWithMusic))
+            dispatch(toggleTheme('light'));
         }
 
 
     } ,[])
 
-    useEffect(() => {
-        console.log(theme);
-    } , [theme])
 
     return (
         <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme} >

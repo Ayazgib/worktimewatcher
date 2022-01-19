@@ -53,7 +53,8 @@ function Settings(props: any) {
             music: {
                 musicIsActive,
                 actionsMusic,
-            }
+            },
+            theme
         }
         savedItem = JSON.stringify(savedItem);
         localStorage.setItem(savedToLSName, savedItem)
