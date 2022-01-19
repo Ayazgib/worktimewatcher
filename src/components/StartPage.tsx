@@ -13,9 +13,9 @@ import {connect, useDispatch, useSelector} from 'react-redux'
 import {
     changeActivity,
     changeClockStatus,
-    changeTimer, setDataFromLS,
+    changeTimer, incrementPomodorroCount, setDataFromLS,
     setDurationHHMMSS, setShouldOpenModal,
-    setStartTime,
+    setStartTime, toggleFromPomodorro,
     toggleModal
 } from "../redux/actions";
 import internal from "stream";
@@ -27,23 +27,31 @@ function StartPage(props: any) {
     const [durationSecond, setDurationSecond] = useState<number>(0);
     const [allActivities, setAllActivities] = useState<any>();
     const [timerInterval, setTimerInterval] = useState<any>()
-
+    const [savedTimeLocal, setSavedTimeLocal] = useState<any>([]);
+    const [pomodorroTimer, setPomodorroTimer] = useState<any>()
 
     const state = useSelector((state:any) => state)
-    const {currentActivity,clockCurrentStatus, isOpenModal, isStartTimer, startTime, shouldOpenModal} = state.timer
+    const {currentActivity,clockCurrentStatus, isOpenModal,shouldOpenModal,
+        isStartTimer, startTime ,
+        isPomodorroTimer, savedTime, pomodorroCount} = state.timer
      const {dataFromLs} = state.global
     const {hours, minutes, seconds} = state.timer.time;
+    const {pomodorroIsActive, pomodorroTime} = state.settings
+
+    useEffect(() => {
+        setSavedTimeLocal(savedTime);
+    } ,[savedTime])
+
 
     const dispatch = useDispatch()
 
     //получение видов деятельности
     useEffect(() => {
-
-
         if (activities) {
             setAllActivities(activities);
         }
     } ,[])
+
     //управление модальным окном
     const handleOpen = () => dispatch(toggleModal(true))
     useEffect(() => {
@@ -52,40 +60,102 @@ function StartPage(props: any) {
         }
     } , [isOpenModal])
 
+
     useEffect(() => {
-        if (clockCurrentStatus === 1) handleStart();
-        if (clockCurrentStatus === 0) {
-            handleStop();
+        if (clockCurrentStatus === 1) {
+            dispatch(setStartTime(moment().format()))
+            let timer;
+            if (pomodorroIsActive) {
+                clearTimeout(pomodorroTimer);
+                timer = setTimeout(() => {
+                    let pomodorroChillHour = Math.trunc(pomodorroTime.chill / 60),
+                        pomodorroChillMinutes = pomodorroTime.chill - pomodorroChillHour * 60,
+                        pomodorroWorkHour = Math.trunc(pomodorroTime.work / 60) ,
+                        pomodorroWorkMinutes = pomodorroTime.work  - pomodorroWorkHour * 60;
+                    dispatch(incrementPomodorroCount(pomodorroCount+1));
+                    dispatch(toggleFromPomodorro({hours: Number(pomodorroWorkHour), minutes: Number(pomodorroWorkMinutes), seconds: 0}, true))
+                    dispatch(changeTimer({hours: pomodorroChillHour, minutes: pomodorroChillMinutes - 1, seconds: 59}));
+                } , (pomodorroTime.work * 60000) + 3000)
+            }
+            if (timer) {
+                setPomodorroTimer(timer);
+            }
         }
+        if (clockCurrentStatus === 0) handleStop();
     }, [clockCurrentStatus]);
+
+
+    useEffect(() => {
+        let timer;
+        clearTimeout(pomodorroTimer);
+        if (pomodorroIsActive && !isPomodorroTimer) {
+            timer = setTimeout(() => {
+                let pomodorroChillHour = Math.trunc(pomodorroTime.chill / 60),
+                    pomodorroChillMinutes = pomodorroTime.chill - pomodorroChillHour * 60,
+                    pomodorroWorkHour = Math.trunc((pomodorroTime.work * pomodorroCount ? pomodorroCount : 1)/ 60) ,
+                    pomodorroWorkMinutes = (pomodorroTime.work * pomodorroCount ? pomodorroCount : 1) - pomodorroWorkHour * 60;
+                console.log(pomodorroWorkHour, pomodorroWorkMinutes);
+                dispatch(toggleFromPomodorro({hours: Number(pomodorroWorkHour), minutes: Number(pomodorroWorkMinutes), seconds: 0}, true))
+                dispatch(changeTimer({hours: pomodorroChillHour, minutes: pomodorroChillMinutes - 1, seconds: 59}));
+            } , (pomodorroTime.work * 60000))
+        }
+        if (isPomodorroTimer) {
+            timer = setTimeout(() => {
+                dispatch(changeTimer({hours: savedTime.hours, minutes: savedTime.minutes, seconds: savedTime.seconds}));
+                dispatch(incrementPomodorroCount(pomodorroCount+1));
+                dispatch(toggleFromPomodorro({hours: 0, minutes: 0, seconds: 0}, false))
+            } , pomodorroTime.chill * 60000)
+        }
+        if (timer) {
+            setPomodorroTimer(timer);
+        }
+    } ,[isPomodorroTimer])
 
     useEffect(() => {
         let timer;
         clearInterval(timerInterval);
         if (isStartTimer) {
-            timer = setInterval(() => {
-                if (seconds === 59) {
-                    dispatch(changeTimer({hours, minutes: minutes + 1, seconds: 0}));
-                    return
-                }
-                if (minutes === 59) {
-                    dispatch(changeTimer({hours: hours + 1, minutes: 0, seconds: seconds}))
-                    return;
-                }
+            if (isPomodorroTimer) {
+                timer = setInterval(() => {
+                    if (seconds === 0) {
+                        dispatch(changeTimer({hours, minutes: minutes - 1, seconds: 59}));
+                        return
+                    }
+                    if (minutes === 59) {
+                        dispatch(changeTimer({hours: hours - 1, minutes: 0, seconds: seconds}))
+                        return;
+                    }
 
-                dispatch(changeTimer({hours, minutes, seconds: seconds + 1}))
-            }, 1000);
+                    dispatch(changeTimer({hours, minutes, seconds: seconds - 1}))
+                }, 1000);
+            } else {
+                timer = setInterval(() => {
+                    if (seconds === 59) {
+                        dispatch(changeTimer({hours, minutes: minutes + 1, seconds: 0}));
+                        return
+                    }
+                    if (minutes === 59) {
+                        dispatch(changeTimer({hours: hours + 1, minutes: 0, seconds: seconds}))
+                        return;
+                    }
+
+                    dispatch(changeTimer({hours, minutes, seconds: seconds + 1}))
+                }, 1000);
+            }
+
             setTimerInterval(timer);
         }
 
     }, [isStartTimer, seconds, minutes])
 
-    const handleStart = () => {
-        dispatch(setStartTime(moment().format()))
-    }
 
+
+    //TODO LAST ACTIVE ACTIVITY
+    // менять фон
     const handleStop = () => {
-        let durationSec = Date.parse(moment().format()) - Date.parse(startTime)
+        clearTimeout(pomodorroTimer);
+        let durationSec =  hours * 3600000 + minutes * 60000+ seconds * 1000
+        console.log(durationSec);
         setDurationSecond(durationSec);
         dispatch(setDurationHHMMSS(`${hours}:`+`${minutes}:`+`${seconds}`))
         if (shouldOpenModal) {
@@ -105,7 +175,6 @@ function StartPage(props: any) {
     }
     //изменение вида деятельности
     const handleChangeActivity = (event: any, newType: any) => {
-        console.log(newType);
         dispatch(changeActivity(newType));
     };
 

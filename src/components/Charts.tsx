@@ -54,7 +54,6 @@ export const Charts = (props: any) => {
     function byField(fieldName: string){
         return (a: any, b: any) => a[fieldName] > b[fieldName] ? 1 : -1;
     };
-    //TODO нет данных для отображения
     useEffect(() => {
         if (dataFromLs) {
             setAllData(dataFromLs);
@@ -89,7 +88,7 @@ export const Charts = (props: any) => {
                 }
             )
             let activitiesArr = Array.from(availableActivities.values())
-
+            console.log(activitiesArr);
             setSortedMonths(availableMonthsObjects?.map((month: any) => month.name))
             setAllActivities(activitiesArr);
             setSortedActivities(activitiesArr)

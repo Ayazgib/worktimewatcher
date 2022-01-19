@@ -45,3 +45,14 @@
 .headerLink.active {
   color: #1976D2;
 }
+.settingsWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  margin: 0 auto;
+}
+.settings-pomodorro-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}

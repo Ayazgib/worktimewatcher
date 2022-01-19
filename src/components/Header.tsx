@@ -35,9 +35,11 @@ export const Header = () => {
                         Анализ
                     </Typography>
                 </NavLink>
-                <button onClick={() => {
-                    localStorage.clear();
-                }}>CLEAR</button>
+                <NavLink className='headerLink' to={PagesLink.settings} onClick={handleOpenWarning}>
+                    <Typography variant="h6" component="div">
+                        Настройки
+                    </Typography>
+                </NavLink>
             </nav>
         </header>
     )

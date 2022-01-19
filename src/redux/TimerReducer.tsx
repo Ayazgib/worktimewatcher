@@ -1,8 +1,8 @@
 import {
     CHANGE_ACTIVITY,
     CHANGE_CLOCK_STATUS,
-    INCREMENT_TIMER_ITEM, SET_DATA_FROM_LS,
-    SET_DURATION_HHMMSS, SET_IS_WARNING, SET_START_TIME,
+    INCREMENT_TIMER_ITEM, POMODORRO_PLAYING_COUNT, SET_DATA_FROM_LS,
+    SET_DURATION_HHMMSS, SET_IS_WARNING, SET_START_TIME, TOGGLE_FROM_POMODORRO,
     TOGGLE_MODAL
 } from "./types";
 import {clockStatus} from "../common/models";
@@ -13,6 +13,12 @@ const initialState = {
         minutes: 0,
         seconds: 0,
     },
+    savedTime: {
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+    },
+    isPomodorroTimer: false,
     startTime: '',
     isStartTimer: false,
     shouldOpenModal: true,
@@ -22,6 +28,7 @@ const initialState = {
     clockCurrentStatus: clockStatus.notStarted,
     currentActivity: 'work',
     durationHHMMSS: '00:00:00',
+    pomodorroCount: 0,
 }
 
 export const TimerReducer = (state: any = initialState, action: any) => {
@@ -38,8 +45,10 @@ export const TimerReducer = (state: any = initialState, action: any) => {
             return {...state, durationHHMMSS: action.payload}
         case SET_START_TIME:
             return {...state, startTime: action.payload}
-        case SET_IS_WARNING:
-            return {...state, isWarning: action.payload.isWarning, warningTarget:  action.payload.warningTarget}
+        case TOGGLE_FROM_POMODORRO:
+            return {...state, savedTime:  action.payload.time, isPomodorroTimer: action.payload.isPomodorroTimer}
+        case POMODORRO_PLAYING_COUNT:
+            return  {...state, pomodorroCount: action.payload}
         default: return state
     }
 }

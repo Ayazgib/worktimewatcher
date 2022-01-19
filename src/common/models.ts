@@ -35,6 +35,7 @@ export const activities = {
 export enum PagesLink {
     main= '/',
     charts = '/Charts',
+    settings = '/Settings'
 }
 
 export const monthsArr = [
@@ -55,3 +56,32 @@ export interface ActivityItem {
     duration: number,
     currentActivity: string,
 }
+
+const audio1 = require("../audio/Лада седан.ogg");
+const audio2 = require("../audio/90.mp3");
+const audio3 = require("../audio/кавказская.mp3")
+const audio4 = require("../audio/награждение.mp3")
+const audio5 = require("../audio/Цыган.mp3")
+export const audios = [
+    {
+        name: 'Лада седан',
+        url: audio1
+    },
+    {
+        name: 'Хит 90-х',
+        url: audio2
+    },
+    {
+        name: 'Кавказская',
+        url: audio3
+    },
+    {
+        name: 'Награждение в клубе',
+        url: audio4
+    },
+    {
+
+        name: 'Ай дигид диди дай',
+        url: audio5
+    },
+]
