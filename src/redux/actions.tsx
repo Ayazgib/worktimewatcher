@@ -3,7 +3,7 @@ import {
     CHANGE_CLOCK_STATUS,
     INCREMENT_TIMER_ITEM,
     POMODORRO_PLAYING_COUNT,
-    POMODORRO_TIME,
+    POMODORRO_TIME, REORDER_MUSIC,
     SET_DATA_FROM_LS,
     SET_DURATION_HHMMSS,
     SET_IS_WARNING,
@@ -115,6 +115,12 @@ export function toggleMusic(activate: boolean) {
     return {
         type: TOGGLE_MUSIC,
         payload: activate
+    }
+}
+export function reorderMusic(activity: any) {
+    return {
+        type: REORDER_MUSIC,
+        payload: activity
     }
 }
 

@@ -1,5 +1,5 @@
 import {
-    POMODORRO_TIME, TOGGLE_MUSIC,
+    POMODORRO_TIME, REORDER_MUSIC, TOGGLE_MUSIC,
     TOGGLE_POMODORRO,
 } from "./types";
 
@@ -7,6 +7,7 @@ const initialState = {
     pomodorroIsActive: false,
     pomodorroTime: {work: 20, chill: 5},
     musicIsActive: false,
+    musicActions: [],
 }
 
 export const SettingsReducer = (state: any = initialState, action: any) => {
@@ -17,6 +18,8 @@ export const SettingsReducer = (state: any = initialState, action: any) => {
             return {...state, pomodorroTime: {work: action.payload.work, chill: action.payload.chill}};
         case TOGGLE_MUSIC:
             return {...state, musicIsActive: action.payload};
+        case REORDER_MUSIC:
+            return {...state, musicActions: action.payload};
         default: return state
     }
 }

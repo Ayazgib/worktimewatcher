@@ -26,11 +26,10 @@ import {MusicDND} from "./MusicDND";
 
 
 function Settings(props: any) {
-    const [expanded, setExpanded] = useState<boolean>(false);
     const [savedToLSName, setSavedToLSName] = useState<string>(savedConstName + '/settings')
 
     const state = useSelector((state:any) => state)
-    const {pomodorroIsActive, pomodorroTime, musicIsActive} = state.settings
+    const {pomodorroIsActive, pomodorroTime, musicIsActive,musicActions} = state.settings
 
     const dispatch = useDispatch()
 
@@ -43,9 +42,18 @@ function Settings(props: any) {
     }
 
     const handleSave = (showModal: boolean = true) => {
+        let actionsMusic = actionsWithMusic.map((item: any, index) => {
+            return {...item, musicName: musicActions[index].musicName, musicUrl: musicActions[index].musicUrl}
+        })
         let savedItem: any = {
-            pomodorroIsActive,
-            pomodorroTime
+            pomodorro: {
+                pomodorroIsActive,
+                pomodorroTime,
+            },
+            music: {
+                musicIsActive,
+                actionsMusic,
+            }
         }
         savedItem = JSON.stringify(savedItem);
         localStorage.setItem(savedToLSName, savedItem)

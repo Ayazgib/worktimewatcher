@@ -1,19 +1,14 @@
-import React, { Component } from "react";
+import React, {Component, useState} from "react";
 import ReactDOM from "react-dom";
 // @ts-ignore
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import {audios, IAudio} from "../common/models";
+import {audios, IactionsWithMusic, IAudio} from "../common/models";
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import {IconButton} from "@mui/material/";
+import {useDispatch, useSelector} from "react-redux";
+import {reorderMusic} from "../redux/actions";
 
-// fake data generator
-const getItems = (count: number) =>
-    Array.from({ length: count }, (v, k) => k).map(k => ({
-        id: `item-${k}`,
-        content: `item ${k}`
-    }));
 
-// a little function to help us with reordering the result
 const reorder = (list: any, startIndex: number, endIndex: number) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
@@ -33,10 +28,7 @@ const getItemStyle = (isDragging: any, draggableStyle: any) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderRadius: '20px',
-    // change background colour if dragging
     background: isDragging ? "lightgrey" : "white",
-
-    // styles we need to apply on draggables
     ...draggableStyle
 });
 
@@ -45,7 +37,6 @@ const getListStyle = (isDraggingOver:any) => ({
     padding: grid,
     width: 250,
     borderRadius: '20px',
-
 });
 
 const handlePlay = (url: any) => {
@@ -56,36 +47,30 @@ const handlePlay = (url: any) => {
     } , 5000)
 }
 
-export class MusicDND extends Component {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            items: audios
-        };
-        this.onDragEnd = this.onDragEnd.bind(this);
-    }
+export const MusicDND = () => {
+    const state = useSelector((state:any) => state)
+    const {musicActions} = state.settings
 
-    onDragEnd(result:any) {
-        // dropped outside the list
+    const dispatch = useDispatch()
+
+
+    const onDragEnd = (result:any) => {
         if (!result.destination) {
             return;
         }
 
-        const items = reorder(
+        const newItems = reorder(
             // @ts-ignore
-            this.state.items,
+            musicActions,
             result.source.index,
             result.destination.index
         );
-
-        this.setState({
-            items
-        });
+        dispatch(reorderMusic(newItems));
     }
 
-    render() {
+
         return (
-            <DragDropContext onDragEnd={this.onDragEnd}>
+            <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable">
                     {(provided: any, snapshot: any) => (
                         <div
@@ -95,7 +80,7 @@ export class MusicDND extends Component {
                         >
 
                             {// @ts-ignore
-                                this.state.items.map((item: IAudio, index: number) => (
+                                musicActions.map((item: IactionsWithMusic, index: number) => (
                                 <Draggable key={item.id} draggableId={item.id} index={index}>
                                     {(provided: any, snapshot: any) => (
                                         <div
@@ -108,8 +93,8 @@ export class MusicDND extends Component {
                                             )}
 
                                         >
-                                            <b>{item.name}</b>
-                                            <IconButton onClick={() => handlePlay(item.url)}  color="primary" aria-label="upload picture" component="span">
+                                            <b>{item.musicName}</b>
+                                            <IconButton onClick={() => handlePlay(item.musicUrl)}  color="primary" aria-label="upload picture" component="span">
                                                 <MusicNoteIcon />
                                             </IconButton>
                                         </div>
@@ -122,7 +107,6 @@ export class MusicDND extends Component {
                 </Droppable>
             </DragDropContext>
         );
-    }
 }
 
 export default MusicDND

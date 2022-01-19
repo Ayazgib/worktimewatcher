@@ -1,13 +1,21 @@
 import React, {useState, useEffect, Dispatch, SetStateAction, useContext} from 'react';
 import {ToggleButton, ToggleButtonGroup, Tooltip, Button, IconButton} from '@mui/material/';
 import {BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import {ActivityItem, clockStatus, activities, savedConstName, PagesLink} from '../common/models'
+import {
+    ActivityItem,
+    clockStatus,
+    activities,
+    savedConstName,
+    PagesLink,
+    audios,
+    actionsWithMusic
+} from '../common/models'
 import KeepMountedModal from './modal'
 
 import StartPage from "./StartPage";
 import {Charts} from "./Charts";
 import AlertDialog from "./Alert";
-import {setDataFromLS, setPomodorroTime, togglePomodorro} from "../redux/actions";
+import {reorderMusic, setDataFromLS, setPomodorroTime, toggleMusic, togglePomodorro} from "../redux/actions";
 import {useDispatch} from "react-redux";
 import Settings from "./Settings";
 
@@ -22,18 +30,29 @@ function Main(props: any) {
         if (dataFromLS) data = JSON.parse(dataFromLS);
         dispatch(setDataFromLS(data));
 
+
         //данные по настройкам
         let savedToLSName = savedConstName + '/settings';
         let savedItem: any = localStorage.getItem(savedToLSName);
+
         if (savedItem) {
             savedItem = JSON.parse(savedItem);
-            dispatch(togglePomodorro(savedItem.pomodorroIsActive))
-            dispatch(setPomodorroTime(+savedItem.pomodorroTime.work,+savedItem.pomodorroTime.chill))
+            if (savedItem.pomodorro) {
+                dispatch(togglePomodorro(savedItem.pomodorro.pomodorroIsActive))
+                dispatch(setPomodorroTime(+savedItem.pomodorro.pomodorroTime.work,+savedItem.pomodorro.pomodorroTime.chill))
+            }
+            if (savedItem.music) {
+                dispatch(toggleMusic(savedItem.music.musicIsActive))
+                dispatch(reorderMusic(savedItem.music.actionsMusic))
+            }
         } else  {
             //default variable
             dispatch(togglePomodorro(false))
             dispatch(setPomodorroTime(20,5))
+            dispatch(toggleMusic(false))
+            dispatch(reorderMusic(actionsWithMusic))
         }
+
 
     } ,[])
 

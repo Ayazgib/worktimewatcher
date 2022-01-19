@@ -98,6 +98,7 @@ export const audios: IAudio[] = [
 ]
 
 export interface IactionsWithMusic {
+    id: string,
     actionName: string,
     musicName: string,
     musicUrl: any
@@ -105,28 +106,33 @@ export interface IactionsWithMusic {
 
 export const actionsWithMusic: IactionsWithMusic[] = [
     {
-        actionName: 'play',
-        musicName: '',
-        musicUrl: '',
+        id: 'audio-1',
+        actionName: "play",
+        musicName: "Ай дигид диди дай",
+        musicUrl: audio1
     },
     {
-        actionName: 'pause',
-        musicName: '',
-        musicUrl: '',
+        id: 'audio-2',
+        actionName: "pause",
+        musicName: "Хит 90-х",
+        musicUrl: audio2
     },
     {
-        actionName: 'stop',
-        musicName: '',
-        musicUrl: '',
+        id: 'audio-3',
+        actionName: "stop",
+        musicName: "Награждение в клубе",
+        musicUrl: audio3
     },
     {
-        actionName: 'pomodorro chill',
-        musicName: '',
-        musicUrl: '',
+        id: 'audio-4',
+        actionName: "pomodorro chill",
+        musicName: "Кавказская",
+        musicUrl: audio4
     },
     {
-        actionName: 'pomodorro work',
-        musicName: '',
-        musicUrl: '',
+        id: 'audio-5',
+        actionName: "pomodorro work",
+        musicName: "Лада седан",
+        musicUrl: audio5
     }
 ]
