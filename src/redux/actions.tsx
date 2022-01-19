@@ -12,7 +12,7 @@ import {
     TOGGLE_FROM_POMODORRO,
     TOGGLE_MODAL,
     TOGGLE_MUSIC,
-    TOGGLE_POMODORRO,
+    TOGGLE_POMODORRO, TOGGLE_THEME,
 } from "./types";
 import {Time} from "../common/models";
 
@@ -124,3 +124,12 @@ export function reorderMusic(activity: any) {
     }
 }
 
+/**
+ * THEME TOGGLER
+ */
+export function toggleTheme(themeName: string) {
+    return {
+        type: TOGGLE_THEME,
+        payload: themeName
+    }
+}

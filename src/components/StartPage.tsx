@@ -206,21 +206,21 @@ function StartPage(props: any) {
         <div>
             {
                 clockCurrentStatus != clockStatus.start
-                    ? <Tooltip title="Start" arrow>
-                        <IconButton size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.start, true))}}>
-                            <PlayArrow fontSize="inherit" />
-                        </IconButton>
+                    ? <Tooltip title="Start"  arrow>
+                        <Button variant='contained' color='info' size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.start, true))}}>
+                            <PlayArrow  fontSize="inherit" />
+                        </Button>
                     </Tooltip>
                     : <Tooltip title="Pause" arrow>
-                        <IconButton  size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.pause, false))}}>
+                        <Button variant='contained' color='info' size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.pause, false))}}>
                             <Pause fontSize="inherit" />
-                        </IconButton>
+                        </Button>
                     </Tooltip>
             }
             <Tooltip title="Stop" arrow>
-                <IconButton  size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.stop, false))}}>
+                <Button style={{marginLeft: 20}} variant='contained' color='info' size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.stop, false))}}>
                     <Stop fontSize="inherit" />
-                </IconButton>
+                </Button>
             </Tooltip>
         </div>
     </div>

@@ -1,12 +1,13 @@
 import React, {Component, useState} from "react";
 import ReactDOM from "react-dom";
-// @ts-ignore
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+//@ts-ignore
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import {audios, IactionsWithMusic, IAudio} from "../common/models";
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import {IconButton} from "@mui/material/";
 import {useDispatch, useSelector} from "react-redux";
 import {reorderMusic} from "../redux/actions";
+import {Button} from "@mui/material";
 
 
 const reorder = (list: any, startIndex: number, endIndex: number) => {
@@ -28,12 +29,12 @@ const getItemStyle = (isDragging: any, draggableStyle: any) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     borderRadius: '20px',
-    background: isDragging ? "lightgrey" : "white",
+    background: isDragging ? "darkgrey" : "#0379B9",
     ...draggableStyle
 });
 
 const getListStyle = (isDraggingOver:any) => ({
-    background: isDraggingOver ? "#023162FF" : "lightgrey",
+    background: isDraggingOver ? "#023162FF" : "#1976d22e",
     padding: grid,
     width: 250,
     borderRadius: '20px',
@@ -94,9 +95,9 @@ export const MusicDND = () => {
 
                                         >
                                             <b>{item.musicName}</b>
-                                            <IconButton onClick={() => handlePlay(item.musicUrl)}  color="primary" aria-label="upload picture" component="span">
+                                            <Button variant='contained' className='settings-player' onClick={() => handlePlay(item.musicUrl)}  color="primary" aria-label="upload picture" component="span">
                                                 <MusicNoteIcon />
-                                            </IconButton>
+                                            </Button>
                                         </div>
                                     )}
                                 </Draggable>

@@ -1,6 +1,6 @@
 import {
     POMODORRO_TIME, REORDER_MUSIC, TOGGLE_MUSIC,
-    TOGGLE_POMODORRO,
+    TOGGLE_POMODORRO, TOGGLE_THEME,
 } from "./types";
 
 const initialState = {
@@ -8,7 +8,9 @@ const initialState = {
     pomodorroTime: {work: 20, chill: 5},
     musicIsActive: false,
     musicActions: [],
+    theme: 'light',
 }
+
 
 export const SettingsReducer = (state: any = initialState, action: any) => {
     switch (action.type) {
@@ -20,6 +22,8 @@ export const SettingsReducer = (state: any = initialState, action: any) => {
             return {...state, musicIsActive: action.payload};
         case REORDER_MUSIC:
             return {...state, musicActions: action.payload};
+        case TOGGLE_THEME:
+            return {...state, theme: action.payload};
         default: return state
     }
 }

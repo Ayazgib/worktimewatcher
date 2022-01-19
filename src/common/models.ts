@@ -16,7 +16,7 @@ export interface Time {
 export const activities = {
     work: {
         name: 'Работа',
-        color: '#061157FF'
+        color: '#0288D1'
     },
     study: {
         name: 'Учеба',
@@ -116,7 +116,7 @@ export const actionsWithMusic: IactionsWithMusic[] = [
         id: 'audio-1',
         actionName: actions.play,
         musicName: "Ай дигид диди дай",
-        musicUrl: audio1
+        musicUrl: audio5
     },
     {
         id: 'audio-2',
@@ -128,20 +128,23 @@ export const actionsWithMusic: IactionsWithMusic[] = [
         id: 'audio-3',
         actionName: actions.stop,
         musicName: "Награждение в клубе",
-        musicUrl: audio3
+        musicUrl: audio4
     },
     {
         id: 'audio-4',
         actionName: actions.pomodorro_chill,
         musicName: "Кавказская",
-        musicUrl: audio4
+        musicUrl: audio3
     },
     {
         id: 'audio-5',
         actionName: actions.pomodorro_work,
         musicName: "Лада седан",
-        musicUrl: audio5
+        musicUrl: audio1
     }
 ]
+
+
+
 
 

@@ -44,7 +44,6 @@
 }
 .headerLink.active {
   color: #1976D2;
-
 }
 .settingsWrapper {
   display: flex;
@@ -68,10 +67,14 @@
   border-radius: 20px;
 }
 .settings-action-name {
-  background-color: darkgrey;
+  background-color: #1976d22e;
   width: 170px;
+  border: 1px solid white;
   border-radius: 20px;
   user-select: none;
   padding: 16px;
   margin: 0px 0px 8px;
+}
+.settings-player {
+  border-radius: 12px !important;
 }

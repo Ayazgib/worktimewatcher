@@ -17,9 +17,9 @@ import {
     changeTimer, setDataFromLS,
     setDurationHHMMSS, setPomodorroTime, setShouldOpenModal,
     setStartTime,
-    toggleModal, toggleMusic, togglePomodorro
+    toggleModal, toggleMusic, togglePomodorro, toggleTheme
 } from "../redux/actions";
-import {MenuItem, Select, TextField} from "@mui/material";
+import {MenuItem, Radio, RadioGroup, Select, TextField} from "@mui/material";
 import {Button} from "@mui/material/";
 import Typography from "@mui/material/Typography";
 import {MusicDND} from "./MusicDND";
@@ -29,7 +29,7 @@ function Settings(props: any) {
     const [savedToLSName, setSavedToLSName] = useState<string>(savedConstName + '/settings')
 
     const state = useSelector((state:any) => state)
-    const {pomodorroIsActive, pomodorroTime, musicIsActive,musicActions} = state.settings
+    const {pomodorroIsActive, pomodorroTime, musicIsActive,musicActions, theme} = state.settings
 
     const dispatch = useDispatch()
 
@@ -113,8 +113,19 @@ function Settings(props: any) {
                     }
                 </FormGroup>
             </FormControl>
-            <Button style={{alignSelf: 'flex-end'}} variant="outlined" onClick={() => handleSave()}>СОХРАНИТЬ</Button>
-
+            <FormControl>
+                <FormLabel id="demo-row-radio-buttons-group-label">Тема оформления:</FormLabel>
+                <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                    value={theme}
+                >
+                    <FormControlLabel value="light" onClick={(e: any) => {   dispatch(toggleTheme(e.target.value))}} control={<Radio />} label="Light" />
+                    <FormControlLabel value="dark" onClick={(e: any) => {  dispatch(toggleTheme(e.target.value))}} control={<Radio />} label="Dark" />
+                </RadioGroup>
+            </FormControl>
+            <Button style={{alignSelf: 'flex-end'}} variant="contained" onClick={() => handleSave()}>СОХРАНИТЬ</Button>
         </div>
     );
 }

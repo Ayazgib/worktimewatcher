@@ -16,11 +16,17 @@ import StartPage from "./StartPage";
 import {Charts} from "./Charts";
 import AlertDialog from "./Alert";
 import {reorderMusic, setDataFromLS, setPomodorroTime, toggleMusic, togglePomodorro} from "../redux/actions";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Settings from "./Settings";
+import {darkTheme, lightTheme, GlobalStyles} from "./theme";
+import { ThemeProvider } from 'styled-components';
 
 
 function Main(props: any) {
+    const state = useSelector((state:any) => state)
+
+    const {theme} = state.settings
+
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -56,8 +62,14 @@ function Main(props: any) {
 
     } ,[])
 
+    useEffect(() => {
+        console.log(theme);
+    } , [theme])
+
     return (
-        <main className='container'>
+        <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme} >
+            <GlobalStyles />
+            <main className='container'>
             <Routes>
                 <Route path={PagesLink.main} element={<StartPage />} />
                 <Route path={PagesLink.charts} element={<Charts />} />
@@ -66,6 +78,8 @@ function Main(props: any) {
             <KeepMountedModal />
             <AlertDialog />
         </main>
+        </ThemeProvider>
+
     );
 }
 
