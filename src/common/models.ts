@@ -2,10 +2,10 @@ import exp from "constants";
 export const savedConstName = 'app_data';
 
 export enum clockStatus {
-    notStarted= -1,
-    stop,
-    start,
-    pause
+    notStarted= 'notStarted',
+    stop='stop',
+    start='start',
+    pause='pause'
 }
 export interface Time {
     hours: number,
@@ -103,36 +103,45 @@ export interface IactionsWithMusic {
     musicName: string,
     musicUrl: any
 }
+export enum actions {
+    play='play',
+    pause='pause',
+    stop='stop',
+    pomodorro_chill='pomodorro chill',
+    pomodorro_work='pomodorro work'
+}
 
 export const actionsWithMusic: IactionsWithMusic[] = [
     {
         id: 'audio-1',
-        actionName: "play",
+        actionName: actions.play,
         musicName: "Ай дигид диди дай",
         musicUrl: audio1
     },
     {
         id: 'audio-2',
-        actionName: "pause",
+        actionName: actions.pause,
         musicName: "Хит 90-х",
         musicUrl: audio2
     },
     {
         id: 'audio-3',
-        actionName: "stop",
+        actionName: actions.stop,
         musicName: "Награждение в клубе",
         musicUrl: audio3
     },
     {
         id: 'audio-4',
-        actionName: "pomodorro chill",
+        actionName: actions.pomodorro_chill,
         musicName: "Кавказская",
         musicUrl: audio4
     },
     {
         id: 'audio-5',
-        actionName: "pomodorro work",
+        actionName: actions.pomodorro_work,
         musicName: "Лада седан",
         musicUrl: audio5
     }
 ]
+
+

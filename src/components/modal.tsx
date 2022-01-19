@@ -60,15 +60,15 @@ export default function KeepMountedModal(props: any) {
                             ? <span>
                                 {
                                     +duration[0]
-                                        ? <span> <b>{duration[0]}</b> {timerWordCase[0]}</span>
+                                        ? <span> <b> {duration[0]} </b> {timerWordCase[0]}  </span>
                                         : null
                                 }
                                 {
                                     +duration[1]
-                                        ? <span> <b>{duration[1]}</b> {timerWordCase[1]}</span>
+                                        ? <span> <b> {duration[1]} </b> {timerWordCase[1]} </span>
                                         : null
                                 }
-                                <span><b>{duration[2]}</b> {timerWordCase[2]}</span>
+                                <span><b> {duration[2]} </b> {timerWordCase[2]} </span>
                             </span>
                             : null
                         }

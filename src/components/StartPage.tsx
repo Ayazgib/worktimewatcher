@@ -5,7 +5,7 @@ import {PlayArrow, Pause, Stop} from '@mui/icons-material';
 import {makeStyles, createStyles} from "@mui/styles";
 
 import {Timer} from './Timer'
-import {ActivityItem, clockStatus, activities,  savedConstName} from '../common/models'
+import {ActivityItem, clockStatus, activities, savedConstName, actions} from '../common/models'
 import KeepMountedModal from './modal'
 import moment from "moment";
 import {connect, useDispatch, useSelector} from 'react-redux'
@@ -20,6 +20,7 @@ import {
 } from "../redux/actions";
 import internal from "stream";
 import {Theme} from "@mui/material";
+import {togglePlayingMusic} from "../common/functions";
 
 
 
@@ -36,7 +37,7 @@ function StartPage(props: any) {
         isPomodorroTimer, savedTime, pomodorroCount} = state.timer
      const {dataFromLs} = state.global
     const {hours, minutes, seconds} = state.timer.time;
-    const {pomodorroIsActive, pomodorroTime} = state.settings
+    const {pomodorroIsActive, pomodorroTime, musicActions, musicIsActive} = state.settings
 
     useEffect(() => {
         setSavedTimeLocal(savedTime);
@@ -55,14 +56,15 @@ function StartPage(props: any) {
     //управление модальным окном
     const handleOpen = () => dispatch(toggleModal(true))
     useEffect(() => {
-        if (!isOpenModal && clockCurrentStatus === 0) {
+        if (!isOpenModal && clockCurrentStatus === clockStatus.stop) {
             dispatch(changeTimer({hours: 0, minutes: 0, seconds: 0}))
         }
     } , [isOpenModal])
 
 
     useEffect(() => {
-        if (clockCurrentStatus === 1) {
+        if (clockCurrentStatus === clockStatus.start) {
+            if (musicIsActive) togglePlayingMusic(actions.play, musicActions);
             dispatch(setStartTime(moment().format()))
             let timer;
             if (pomodorroIsActive) {
@@ -81,7 +83,7 @@ function StartPage(props: any) {
                 setPomodorroTimer(timer);
             }
         }
-        if (clockCurrentStatus === 0) handleStop();
+        if (clockCurrentStatus === clockStatus.stop) handleStop();
     }, [clockCurrentStatus]);
 
 
@@ -90,6 +92,8 @@ function StartPage(props: any) {
         clearTimeout(pomodorroTimer);
         if (pomodorroIsActive && !isPomodorroTimer) {
             timer = setTimeout(() => {
+                if (musicIsActive) togglePlayingMusic(actions.pomodorro_chill, musicActions);
+
                 let pomodorroChillHour = Math.trunc(pomodorroTime.chill / 60),
                     pomodorroChillMinutes = pomodorroTime.chill - pomodorroChillHour * 60,
                     pomodorroWorkHour = Math.trunc((pomodorroTime.work * pomodorroCount ? pomodorroCount : 1)/ 60) ,
@@ -101,6 +105,7 @@ function StartPage(props: any) {
         }
         if (isPomodorroTimer) {
             timer = setTimeout(() => {
+                if (musicIsActive) togglePlayingMusic(actions.pomodorro_work, musicActions);
                 dispatch(changeTimer({hours: savedTime.hours, minutes: savedTime.minutes, seconds: savedTime.seconds}));
                 dispatch(incrementPomodorroCount(pomodorroCount+1));
                 dispatch(toggleFromPomodorro({hours: 0, minutes: 0, seconds: 0}, false))
@@ -144,6 +149,8 @@ function StartPage(props: any) {
             }
 
             setTimerInterval(timer);
+        } else if (clockCurrentStatus === clockStatus.pause){
+            if (musicIsActive) togglePlayingMusic(actions.pause, musicActions);
         }
 
     }, [isStartTimer, seconds, minutes])
@@ -153,9 +160,9 @@ function StartPage(props: any) {
     //TODO LAST ACTIVE ACTIVITY
     // менять фон
     const handleStop = () => {
+        if (musicIsActive) togglePlayingMusic(actions.stop, musicActions);
         clearTimeout(pomodorroTimer);
         let durationSec =  hours * 3600000 + minutes * 60000+ seconds * 1000
-        console.log(durationSec);
         setDurationSecond(durationSec);
         dispatch(setDurationHHMMSS(`${hours}:`+`${minutes}:`+`${seconds}`))
         if (shouldOpenModal) {
@@ -198,7 +205,7 @@ function StartPage(props: any) {
         <Timer />
         <div>
             {
-                clockCurrentStatus != 1
+                clockCurrentStatus != clockStatus.start
                     ? <Tooltip title="Start" arrow>
                         <IconButton size="large" onClick={() => {dispatch(changeClockStatus(clockStatus.start, true))}}>
                             <PlayArrow fontSize="inherit" />

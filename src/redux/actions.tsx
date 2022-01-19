@@ -23,7 +23,7 @@ export function changeActivity(newActivity: string) {
     }
 }
 
-export function changeClockStatus(status: number, isStart: boolean, shouldOpenModal: boolean = true) {
+export function changeClockStatus(status: string, isStart: boolean, shouldOpenModal: boolean = true) {
     return {
         type: CHANGE_CLOCK_STATUS,
         payload: {
